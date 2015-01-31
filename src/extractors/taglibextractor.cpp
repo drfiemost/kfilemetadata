@@ -34,6 +34,7 @@
 #include <taglib.h>
 #include <tag.h>
 #include <vorbisfile.h>
+#include <opusfile.h>
 #include <xiphcomment.h>
 
 #include <QDateTime>
@@ -48,7 +49,7 @@ TagLibExtractor::TagLibExtractor(QObject* parent, const QVariantList&)
 QStringList TagLibExtractor::mimetypes() const
 {
     QStringList types;
-    // MP3 FLAC, MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.
+    // MP3, FLAC, Vorbis, Opus,  MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.
     // MP3
     types << QLatin1String("audio/mpeg");
     types << QLatin1String("audio/mpeg3"); types << QLatin1String("audio/x-mpeg");
@@ -59,8 +60,11 @@ QStringList TagLibExtractor::mimetypes() const
     // MPC
     types << QLatin1String("audio/x-musepack");
 
-    //OGG
+    // Vorbis
     types << QLatin1String("audio/ogg"); types << QLatin1String("audio/x-vorbis+ogg");
+
+    // Opus
+    types << QLatin1String("audio/opus"); types << QLatin1String("audio/x-opus+ogg");
 
     // WAV
     types << QLatin1String("audio/wav");
@@ -174,6 +178,14 @@ void TagLibExtractor::extract(ExtractionResult* result)
             TagLib::Ogg::Vorbis::File oggFile(fileUrl.toUtf8().data(), true);
             if (oggFile.tag() && !oggFile.tag()->isEmpty()) {
                 lstOgg = oggFile.tag()->fieldListMap();
+            }
+        }
+
+        // Opus files.
+        if (mimeType == "audio/opus" || mimeType == "audio/x-opus+ogg") {
+            TagLib::Ogg::Opus::File opusFile(fileUrl.toUtf8().data(), true);
+            if (opusFile.tag() && !opusFile.tag()->isEmpty()) {
+                lstOgg = opusFile.tag()->fieldListMap();
             }
         }
 
