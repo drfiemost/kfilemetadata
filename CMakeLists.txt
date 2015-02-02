@@ -13,7 +13,7 @@ set_package_properties(PopplerQt4 PROPERTIES DESCRIPTION "A PDF rendering librar
                        URL "http://poppler.freedesktop.org" TYPE OPTIONAL
                        PURPOSE "Support for PDF files")
 
-find_package(Taglib)
+find_package(Taglib 1.9)
 set_package_properties(Taglib PROPERTIES DESCRIPTION "Id3 tag reader"
                        URL "http://developer.kde.org/~wheeler/taglib.html" TYPE OPTIONAL
                        PURPOSE "Support for music metadata")
