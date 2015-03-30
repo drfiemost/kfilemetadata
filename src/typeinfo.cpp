@@ -76,6 +76,11 @@ TypeInfo::TypeInfo(Type::Type type)
         d->name = QLatin1String("Video");
         d->displayName = i18nc("@label", "Video");
         break;
+
+    case Type::Folder:
+        d->name = QLatin1String("Folder");
+        d->displayName = i18nc("@label", "Folder");
+        break;
     }
 }
 
