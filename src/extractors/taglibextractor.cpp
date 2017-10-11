@@ -24,6 +24,7 @@
 
 // Taglib includes
 #include <fileref.h>
+#include <tfilestream.h>
 #include <flacfile.h>
 #include <apetag.h>
 #include <mpcfile.h>
@@ -40,6 +41,7 @@
 #include <xiphcomment.h>
 
 #include <QDateTime>
+#include <QDebug>
 
 using namespace KFileMetaData;
 
@@ -96,8 +98,16 @@ void TagLibExtractor::extract(ExtractionResult* result)
     const QString fileUrl = result->inputUrl();
     const QString mimeType = result->inputMimetype();
 
-    TagLib::FileRef file(fileUrl.toUtf8().constData(), true);
+    // Open the file readonly. Important if we're sandboxed.
+    TagLib::FileStream stream(fileUrl.toUtf8().constData(), true);
+    if (!stream.isOpen()) {
+        qWarning() << "Unable to open file readonly: " << fileUrl;
+        return;
+    }
+
+    TagLib::FileRef file(&stream, true);
     if (file.isNull()) {
+        qWarning() << "Unable to open file: " << fileUrl;
         return;
     }
 
@@ -112,7 +122,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
     // Handling multiple tags in mpeg files.
     if ((mimeType == "audio/mpeg") || (mimeType == "audio/mpeg3") || (mimeType == "audio/x-mpeg")) {
-        TagLib::MPEG::File mpegFile(fileUrl.toUtf8().constData(), true);
+        TagLib::MPEG::File mpegFile(&stream, TagLib::ID3v2::FrameFactory::instance(), true);
         if (mpegFile.ID3v2Tag() && !mpegFile.ID3v2Tag()->isEmpty()) {
             TagLib::ID3v2::FrameList lstID3v2;
 
@@ -172,7 +182,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
     }
 
     if (mimeType == "audio/mp4") {
-        TagLib::MP4::File mp4File(fileUrl.toUtf8().constData(), true);
+        TagLib::MP4::File mp4File(&stream, true);
         if (mp4File.tag() && !mp4File.tag()->isEmpty()) {
             TagLib::MP4::ItemListMap allTags = mp4File.tag()->itemListMap();
 
@@ -196,7 +206,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
         // FLAC files.
         if (mimeType == "audio/flac") {
-            TagLib::FLAC::File flacFile(fileUrl.toUtf8().constData(), true);
+            TagLib::FLAC::File flacFile(&stream, TagLib::ID3v2::FrameFactory::instance(), true);
             if (flacFile.xiphComment() && !flacFile.xiphComment()->isEmpty()) {
                 lstOgg = flacFile.xiphComment()->fieldListMap();
             }
@@ -204,7 +214,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
         // Vorbis files.
         if (mimeType == "audio/ogg" || mimeType == "audio/x-vorbis+ogg") {
-            TagLib::Ogg::Vorbis::File oggFile(fileUrl.toUtf8().constData(), true);
+            TagLib::Ogg::Vorbis::File oggFile(&stream, true);
             if (oggFile.tag() && !oggFile.tag()->isEmpty()) {
                 lstOgg = oggFile.tag()->fieldListMap();
             }
@@ -212,7 +222,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
         // Opus files.
         if (mimeType == "audio/opus" || mimeType == "audio/x-opus+ogg") {
-            TagLib::Ogg::Opus::File opusFile(fileUrl.toUtf8().constData(), true);
+            TagLib::Ogg::Opus::File opusFile(&stream, true);
             if (opusFile.tag() && !opusFile.tag()->isEmpty()) {
                 lstOgg = opusFile.tag()->fieldListMap();
             }
@@ -268,7 +278,7 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
     // Handling multiple tags in Musepack files.
     if (mimeType == ("audio/x-musepack")) {
-        TagLib::MPC::File mpcFile(fileUrl.toUtf8().constData(), true);
+        TagLib::MPC::File mpcFile(&stream, true);
         if (mpcFile.tag() && !mpcFile.tag()->isEmpty()) {
             TagLib::APE::ItemListMap lstMusepack = mpcFile.APETag()->itemListMap();
             TagLib::APE::ItemListMap::ConstIterator itMPC;
