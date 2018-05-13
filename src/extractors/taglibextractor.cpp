@@ -247,6 +247,9 @@ void TagLibExtractor::extract(ExtractionResult* result)
 
             // Album Artist.
             itOgg = lstOgg.find("ALBUMARTIST");
+            if (itOgg == lstOgg.end())  {
+                itOgg = lstOgg.find("ALBUM ARTIST");
+            }
             if (itOgg != lstOgg.end()) {
                 if (!albumArtists.isEmpty()) {
                     albumArtists += ", ";
@@ -297,7 +300,10 @@ void TagLibExtractor::extract(ExtractionResult* result)
             }
 
             // Album Artist.
-            itMPC = lstMusepack.find("ALBUM ARTIST");
+            itMPC = lstMusepack.find("ALBUMARTIST");
+            if (itMPC == lstMusepack.end()) {
+                itMPC = lstMusepack.find("ALBUM ARTIST");
+            }
             if (itMPC != lstMusepack.end()) {
                 if(!albumArtists.isEmpty()) {
                     albumArtists += ", ";
