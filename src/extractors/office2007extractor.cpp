@@ -171,7 +171,6 @@ void Office2007Extractor::extract(ExtractionResult* result)
         const QStringList wordEntries = wordDirectory->entries();
 
         if (wordEntries.contains("document.xml")) {
-            QDomDocument appDoc("document");
             const KArchiveFile* file = static_cast<const KArchiveFile*>(wordDirectory->entry("document.xml"));
 
             extractTextWithTag(file->createDevice(), QLatin1String("w:t"), result);
