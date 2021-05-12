@@ -69,7 +69,9 @@ void FFmpegExtractor::extract(ExtractionResult* result)
 {
     AVFormatContext* fmt_ctx = NULL;
 
+#if LIBAVFORMAT_VERSION_MAJOR < 58
     av_register_all();
+#endif
 
     QByteArray arr = result->inputUrl().toUtf8();
 
@@ -96,11 +98,7 @@ void FFmpegExtractor::extract(ExtractionResult* result)
     const int index_stream = av_find_default_stream_index(fmt_ctx);
     if (index_stream >= 0) {
         AVStream* stream = fmt_ctx->streams[index_stream];
-#if defined HAVE_AVSTREAM_CODECPAR && HAVE_AVSTREAM_CODECPAR
-            const AVCodecParameters* codec = stream->codecpar;
-#else
-            const AVCodecContext* codec = stream->codec;
-#endif
+        const AVCodecParameters* codec = stream->codecpar;
 
         if (codec->codec_type == AVMEDIA_TYPE_AUDIO || codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             /*
