@@ -8,7 +8,7 @@ kde4_add_library(kfilemetadata SHARED
 
 target_link_libraries(kfilemetadata
    LINK_PRIVATE
-  ${QT_QTCORE_LIBRARY}
+  Qt4::QtCore
   ${KDE4_KDECORE_LIBS}
 )
 

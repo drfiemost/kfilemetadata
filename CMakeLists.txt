@@ -48,7 +48,6 @@ set_package_properties(QMobipocket PROPERTIES DESCRIPTION "Mobipocket epub reade
                        TYPE OPTIONAL PURPOSE "Support for mobi metadata")
 
 include_directories(
-  ${QT_INCLUDES}
   ${KDE4_INCLUDES}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src

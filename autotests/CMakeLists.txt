@@ -8,7 +8,7 @@ kde4_add_unit_test(extractortests NOGUI
 )
 
 target_link_libraries(extractortests
-  ${QT_QTTEST_LIBRARY}
+  Qt4::QtTest
   ${KDE4_KDECORE_LIBS}
   kfilemetadata
 )
@@ -21,7 +21,7 @@ kde4_add_unit_test(propertyinfotest NOGUI
 )
 
 target_link_libraries(propertyinfotest
-  ${QT_QTTEST_LIBRARY}
+  Qt4::QtTest
   ${KDE4_KDECORE_LIBS}
   kfilemetadata
 )
