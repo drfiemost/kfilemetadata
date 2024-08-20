@@ -24,6 +24,9 @@
 #include <KDebug>
 #include <QScopedPointer>
 
+#include <algorithm>
+#include <functional>
+
 using namespace KFileMetaData;
 
 PopplerExtractor::PopplerExtractor(QObject* parent, const QVariantList&)
@@ -148,7 +151,7 @@ QString PopplerExtractor::parseFirstPage(Poppler::Document* pdfDoc, const QStrin
     qDeleteAll(tbList);
 
     QList<int> titleSizes = possibleTitleMap.keys();
-    qSort(titleSizes.begin(), titleSizes.end(), qGreater<int>());
+    std::sort(titleSizes.begin(), titleSizes.end(), std::greater<int>());
 
     QString newPossibleTitle;
 
