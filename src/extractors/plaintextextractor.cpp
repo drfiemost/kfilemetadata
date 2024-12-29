@@ -41,7 +41,7 @@ void PlainTextExtractor::extract(ExtractionResult* result)
     std::string line;
     int lines = 0;
 
-    std::ifstream fstream(QFile::encodeName(result->inputUrl()));
+    std::ifstream fstream(QFile::encodeName(result->inputUrl()).constData());
     if (!fstream.is_open()) {
         return;
     }
