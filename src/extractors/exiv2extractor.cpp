@@ -80,7 +80,11 @@ QVariant toVariantDateTime(const Exiv2::Value& value)
 QVariant toVariantLong(const Exiv2::Value& value)
 {
     if (value.typeId() == Exiv2::unsignedLong || value.typeId() == Exiv2::signedLong) {
+#if EXIV2_TEST_VERSION(0, 28, 0)
+        qlonglong val = value.toInt64();
+#else
         qlonglong val = value.toLong();
+#endif
         return QVariant(val);
     }
 
